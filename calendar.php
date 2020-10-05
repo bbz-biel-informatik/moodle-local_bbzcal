@@ -17,7 +17,7 @@ if($course_id != null) {
   $events = local_bbzcal\event::get_user_events($DB, $USER->id);
 }
 
-$renderer = new local_bbzcal\renderer($CFG, $DB, $PAGE, $OUTPUT, 'course');
+$renderer = new local_bbzcal\renderer($CFG, $DB, $PAGE, $OUTPUT, 'course', $course_id);
 
 echo $renderer->header();
 

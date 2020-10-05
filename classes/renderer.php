@@ -10,13 +10,15 @@ class renderer {
   private $PAGE;
   private $OUTPUT;
   private $type;
+  private $course_id;
 
-  public function __construct($CFG, $DB, $PAGE, $OUTPUT, $type) {
+  public function __construct($CFG, $DB, $PAGE, $OUTPUT, $type, $course_id) {
     $this->CFG = $CFG;
     $this->DB = $DB;
     $this->PAGE = $PAGE;
     $this->OUTPUT = $OUTPUT;
     $this->type = $type;
+    $this->course_id = $course_id;
   }
 
   public function header() {
@@ -32,8 +34,6 @@ class renderer {
 
     $this->PAGE->set_heading($title);
     $this->PAGE->navbar->add($title);
-
-    $this->PAGE->requires->js_call_amd('local_bbzcal/modal', 'init');
 
     return $this->OUTPUT->header();
   }
@@ -87,6 +87,7 @@ class renderer {
     $data = new \stdClass();
     $data->weekdays = $weekdays;
     $data->dates = $dates;
+    $data->courseid = $this->course_id;
     return $this->OUTPUT->render_from_template('local_bbzcal/calendar', $data);
   }
 
@@ -96,31 +97,12 @@ class renderer {
   }
 
   public function modal() {
-    return "
-      <div class='local_bbzcal_modal'>
-        <div class='title'>Add Event</div>
-        <div class='body'>
-          Date <input name='date' type='text' disabled><br>
-          Title <input name='title' type='text'>
-          <input type='submit' value='Save'>
-        </div>
-      </div>
-    ";
+    $data = new \stdClass();
+    return $this->OUTPUT->render_from_template('local_bbzcal/modal', $data);
   }
 
   public function js() {
-    $code = "
-    <script>
-      var modal = document.querySelector('.local_bbzcal_modal');
-      var buttons = document.querySelectorAll('.local_bbzcal .add');
-      buttons.forEach(button => {
-        button.addEventListener('click', function() {
-          modal.style.display = 'block';
-          modal.style.top = this.offsetTop;
-          modal.style.left = this.offsetLeft;
-        });
-      });
-    </script>";
-    return $code;
+    $data = new \stdClass();
+    return $this->OUTPUT->render_from_template('local_bbzcal/js', $data);
   }
 }

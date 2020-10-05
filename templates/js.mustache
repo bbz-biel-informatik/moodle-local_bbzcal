@@ -1,0 +1,24 @@
+<script>
+  var table = document.querySelector('.local_bbzcal.table');
+  var modal = document.querySelector('.local_bbzcal_modal');
+  var dateInput = modal.querySelector('.date');
+  var tsInput = modal.querySelector('.timestamp');
+  var cidInput = modal.querySelector('.course_id');
+  var locInput = modal.querySelector('.location');
+  var buttons = document.querySelectorAll('.local_bbzcal .add');
+
+  function onAddButtonClick() {
+    modal.style.display = 'block';
+    modal.style.top = this.offsetTop;
+    modal.style.left = this.offsetLeft;
+    const date = new Date(this.getAttribute('data-timestamp') * 1000);
+    tsInput.value = this.getAttribute('data-timestamp');
+    cidInput.value = table.getAttribute('data-courseid');
+    locInput.value = window.location.href;
+    dateInput.value = date.getUTCDate() + '.' + (date.getUTCMonth() + 1) + '.' + date.getUTCFullYear();
+  }
+
+  buttons.forEach(button => {
+    button.addEventListener('click', onAddButtonClick);
+  });
+</script>

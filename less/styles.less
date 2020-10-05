@@ -1,6 +1,7 @@
 .local_bbzcal.table {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: 50px;
   grid-auto-rows: minmax(180px, auto);
 
   .dayhead {
@@ -38,12 +39,16 @@
         color: white;
         border-radius: 5px;
         padding: 6px;
+        margin-bottom: 4px;
       }
     }
 
     .add {
       align-self: flex-end;
       padding: 6px;
+      cursor: pointer;
+      background-color: lightskyblue;
+      line-height: 12px;
     }
   }
 }
