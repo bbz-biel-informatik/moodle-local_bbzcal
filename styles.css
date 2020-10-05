@@ -1,0 +1,26 @@
+.local_bbzcal.table {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: minmax(100px, auto);
+}
+
+.local_bbzcal.table .dayhead {
+  align-self: center;
+  justify-self: center;
+}
+
+.local_bbzcal.table .day {
+  border: 1px solid black;
+  padding: 6px;
+}
+
+.local_bbzcal.table .day.current {
+  background-color: orange;
+}
+
+.local_bbzcal.table .event {
+  background-color: blueviolet;
+  color: white;
+  border-radius: 5px;
+  padding: 6px;
+}
