@@ -23,4 +23,8 @@ echo $renderer->header();
 
 echo $renderer->calendar($events);
 
+echo $renderer->modal();
+
+echo $renderer->js();
+
 echo $renderer->footer();

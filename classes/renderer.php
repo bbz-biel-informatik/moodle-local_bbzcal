@@ -33,6 +33,8 @@ class renderer {
     $this->PAGE->set_heading($title);
     $this->PAGE->navbar->add($title);
 
+    $this->PAGE->requires->js_call_amd('local_bbzcal/modal', 'init');
+
     return $this->OUTPUT->header();
   }
 
@@ -82,7 +84,7 @@ class renderer {
         $str .= '<div class="event">' . $match->title . '</div>';
       }
 
-      $str .= '</div><div class="add">&plus;</div></div>';
+      $str .= '</div><div class="add" data-date="' . $date->getTimestamp() . '">&plus;</div></div>';
 
       if ($weekDay == 0) {
         if ($month != $currentMonth || $day == $daysInCurrentMonth) {
@@ -100,5 +102,34 @@ class renderer {
   public function footer() {
     $content = $this->OUTPUT->footer();
     return $content;
+  }
+
+  public function modal() {
+    return "
+      <div class='local_bbzcal_modal'>
+        <div class='title'>Add Event</div>
+        <div class='body'>
+          Date <input name='date' type='text' disabled><br>
+          Title <input name='title' type='text'>
+          <input type='submit' value='Save'>
+        </div>
+      </div>
+    ";
+  }
+
+  public function js() {
+    $code = "
+    <script>
+      var modal = document.querySelector('.local_bbzcal_modal');
+      var buttons = document.querySelectorAll('.local_bbzcal .add');
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          modal.style.display = 'block';
+          modal.style.top = this.offsetTop;
+          modal.style.left = this.offsetLeft;
+        });
+      });
+    </script>";
+    return $code;
   }
 }
