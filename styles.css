@@ -1,7 +1,7 @@
 .local_bbzcal.table {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: minmax(100px, auto);
+  grid-auto-rows: minmax(120px, auto);
 }
 
 .local_bbzcal.table .dayhead {
@@ -10,11 +10,29 @@
 }
 
 .local_bbzcal.table .day {
+  display: flex;
+  flex-direction: column;
   border: 1px solid black;
+}
+
+.local_bbzcal.table .date {
+  text-align: center;
+  background-color: #EFEFEF;
+  padding: 4px;
+}
+
+.local_bbzcal.table .content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: 6px;
 }
 
-.local_bbzcal.table .day.current {
+.local_bbzcal.table .day.off {
+  background-color: #EFEFEF;
+}
+
+.local_bbzcal.table .day.current .date {
   background-color: orange;
 }
 
@@ -22,5 +40,10 @@
   background-color: blueviolet;
   color: white;
   border-radius: 5px;
+  padding: 6px;
+}
+
+.local_bbzcal.table .add {
+  align-self: flex-end;
   padding: 6px;
 }

@@ -65,13 +65,15 @@ class renderer {
 
       if ($month != $currentMonth) {
         // we're either at the beginning or end of our table
-        $str .= '<div class="day">';
+        $str .= '<div class="day off">';
       } else if ($day == $dayOfMonth) {
         // highlight the current date
-        $str .= '<div class="day current">' . $day;
+        $str .= '<div class="day current">';
       } else {
-        $str .= '<div class="day">' . $day;
+        $str .= '<div class="day">';
       }
+
+      $str .= '<div class="date">' . $day . '</div><div class="content">';
 
       $matches = array_filter($events, function ($k) use ($date) {
         return $k->date == $date->getTimestamp();
@@ -80,7 +82,7 @@ class renderer {
         $str .= '<div class="event">' . $match->title . '</div>';
       }
 
-      $str .= '</div>';
+      $str .= '</div><div class="add">&plus;</div></div>';
 
       if ($weekDay == 0) {
         if ($month != $currentMonth || $day == $daysInCurrentMonth) {
