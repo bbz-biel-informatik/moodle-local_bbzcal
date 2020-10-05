@@ -1,1 +1,16 @@
-<h1>Hello World</h1>
+<div class="local_bbzcal table">
+  {{#weekdays}}
+    <div class="dayhead">{{.}}</div>
+  {{/weekdays}}
+  {{#dates}}
+    <div class="day {{#offlimit}}off{{/offlimit}} {{#current}}current{{/current}}">
+      <div class="date">{{day}}</div>
+      <div class="content">
+        {{#events}}
+          <div class="event">{{title}}</div>
+        {{/events}}
+      </div>
+      <div class="add" data-date="{{timestamp}}">&plus;</div>
+    </div>
+  {{/dates}}
+</div>

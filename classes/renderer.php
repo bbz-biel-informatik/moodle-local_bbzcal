@@ -42,61 +42,52 @@ class renderer {
     $str = '';
     $today = new \DateTime();
     $today->setTimezone(new \DateTimeZone('UTC'));
-    $dayOfMonth = $today->format('j');
+    $today->setTime(0, 0, 0);
     $currentMonth = $today->format('n');
-    $daysInCurrentMonth = $today->format('t');
 
-    $date = (clone $today)->modify('first day of this month');
-    if ($date->format('w') != 1) {
-      $date->modify('previous monday');
+    $startDate = (clone $today)->modify('first day of this month');
+    if ($startDate->format('w') != 1) {
+      $startDate->modify('previous monday');
     }
 
-    $shouldStopRendering = false;
-
-    $str .= '<div class="local_bbzcal table">';
+    $endDate = (clone $today)->modify('last day of this month');
+    if($endDate->format('w') != 0) {
+      $endDate->modify('next sunday');
+    }
 
     $weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-    foreach($weekdays as $weekday) {
-      $str .= '<div class="dayhead">' . $weekday . '</div>';
-    }
 
-    while (!$shouldStopRendering) {
-      $weekDay = $date->format('w');
+    $dates = array();
+
+    for($date = (clone $startDate); $date <= (clone $endDate); $date->modify('+1 day')) {
+
+      $item = new \stdClass();
+      $item->day = $date->format('j');
+      $item->timestamp = $date->getTimestamp();
+      $item->events = array();
+
       $month = $date->format('n');
-      $day = $date->format('j');
 
       if ($month != $currentMonth) {
-        // we're either at the beginning or end of our table
-        $str .= '<div class="day off">';
-      } else if ($day == $dayOfMonth) {
-        // highlight the current date
-        $str .= '<div class="day current">';
-      } else {
-        $str .= '<div class="day">';
+        $item->offlimit = true;
+      } else if ($date == $today) {
+        $item->current = true;
       }
-
-      $str .= '<div class="date">' . $day . '</div><div class="content">';
 
       $matches = array_filter($events, function ($k) use ($date) {
         return $k->date == $date->getTimestamp();
       });
       foreach($matches as $match) {
-        $str .= '<div class="event">' . $match->title . '</div>';
+        array_push($item->events, $match);
       }
 
-      $str .= '</div><div class="add" data-date="' . $date->getTimestamp() . '">&plus;</div></div>';
+      array_push($dates, $item);
 
-      if ($weekDay == 0) {
-        if ($month != $currentMonth || $day == $daysInCurrentMonth) {
-            $shouldStopRendering = true;
-        }
-      }
-
-      // move on to the next day we need to display
-      $date->modify('+1 day');
     }
-    $str .= '</div>';
-    return $str;
+    $data = new \stdClass();
+    $data->weekdays = $weekdays;
+    $data->dates = $dates;
+    return $this->OUTPUT->render_from_template('local_bbzcal/calendar', $data);
   }
 
   public function footer() {
