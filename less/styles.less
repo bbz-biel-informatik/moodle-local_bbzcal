@@ -44,6 +44,10 @@
         &.external {
           background-color: lighten(blueviolet, 20%);
         }
+
+        &.editable {
+          cursor: pointer;
+        }
       }
     }
 
@@ -68,9 +72,19 @@
     padding: 12px;
     display: flex;
     justify-content: space-between;
+
+    .bbzcal_close {
+      cursor: pointer;
+    }
   }
 
   .body {
     padding: 16px;
+  }
+
+  .trash {
+    float: right;
+    padding-bottom: 12px;
+    cursor: pointer;
   }
 }

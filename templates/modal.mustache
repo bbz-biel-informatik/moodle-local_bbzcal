@@ -5,12 +5,15 @@
   </div>
   <div class='body'>
     <form action="create.php" method="POST">
+      <input type="hidden" name="delete" class="delete">
+      <input type="hidden" name="id" class="id">
       <input type="hidden" name="timestamp" class="timestamp">
       <input type="hidden" name="course_id" class="course_id">
       <input type="hidden" name="location" class="location">
       Datum <input name='date' type='text' class="date" disabled><br>
-      Beschreibung <input name='title' type='text'><br>
+      Beschreibung <input name='title' type='text' class="title"><br>
       <input type='submit' value='Speichern'>
     </form>
+    <div class="trash">&#128465;</div>
   </div>
 </div>

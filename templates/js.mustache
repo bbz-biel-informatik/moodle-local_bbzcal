@@ -3,19 +3,28 @@
   var modal = document.querySelector('.local_bbzcal_modal');
   document.body.appendChild(modal);
   var dateInput = modal.querySelector('.date');
+  var idInput = modal.querySelector('.id');
   var tsInput = modal.querySelector('.timestamp');
   var cidInput = modal.querySelector('.course_id');
   var locInput = modal.querySelector('.location');
+  var titleInput = modal.querySelector('.title');
+  var deleteInput = modal.querySelector('.delete');
   var close = modal.querySelector('.bbzcal_close');
+  var trash = modal.querySelector('.trash');
+
   var buttons = document.querySelectorAll('.local_bbzcal .add');
+  var events = document.querySelectorAll('.local_bbzcal .event.editable');
 
   function onAddButtonClick(e) {
     modal.style.display = 'block';
     modal.style.top = (e.clientY + window.scrollY) + 'px';
     modal.style.left = (e.clientX + window.scrollX) + 'px';
     const date = new Date(this.getAttribute('data-timestamp') * 1000);
+    idInput.value = this.getAttribute('data-id');
     tsInput.value = this.getAttribute('data-timestamp');
-    cidInput.value = table.getAttribute('data-courseid');
+    cidInput.value = this.getAttribute('data-courseid');
+    titleInput.value = this.getAttribute('data-title');
+    deleteInput.value = null;
     locInput.value = window.location.href;
     dateInput.value = date.getUTCDate() + '.' + (date.getUTCMonth() + 1) + '.' + date.getUTCFullYear();
   }
@@ -24,7 +33,16 @@
     button.addEventListener('click', onAddButtonClick);
   });
 
+  events.forEach(button => {
+    button.addEventListener('click', onAddButtonClick);
+  });
+
   close.addEventListener('click', function () {
     modal.style.display = 'none';
+  });
+
+  trash.addEventListener('click', function () {
+    deleteInput.value = 1;
+    modal.querySelector('form').submit();
   });
 </script>

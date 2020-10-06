@@ -61,6 +61,9 @@ class renderer {
         if(intval($match->course_id) != intval($this->course_id)) {
           $match->external = true;
         }
+        if(in_array($match->course_id, $admin_course_ids)) {
+          $match->editable = true;
+        }
         array_push($item->events, $match);
       }
 

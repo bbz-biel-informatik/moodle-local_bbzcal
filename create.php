@@ -7,6 +7,8 @@ global $DB;
 $timestamp = $_POST['timestamp'];
 $title = $_POST['title'];
 $course_id = $_POST['course_id'];
+$id = $_POST['id'];
+$delete = $_POST['delete'];
 
 $course = $DB->get_record('course', array('id' => $course_id));
 require_login($course);
@@ -21,12 +23,24 @@ if(!in_array($course_id, $admin_ids)) {
   die();
 }
 
-// add record if all checks passed
-$item = new stdClass();
-$item->date = $timestamp;
-$item->title = $title;
-$item->course_id = $course_id;
-$DB->insert_record('local_bbzcal', $item);
+if($delete == '1') {
+  if($id) {
+    $DB->delete_records('local_bbzcal', array('id' => $id));
+  }
+} else {
+  $item = new stdClass();
+  $item->date = $timestamp;
+  $item->title = $title;
+  $item->course_id = $course_id;
+  if(!$id) {
+    // create
+    $DB->insert_record('local_bbzcal', $item);
+  } else {
+    // update
+    $item->id = $id;
+    $DB->update_record('local_bbzcal', $item);
+  }
+}
 
 header("Location: " . $_POST['location']);
 die();

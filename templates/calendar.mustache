@@ -1,4 +1,4 @@
-<div class="local_bbzcal table" data-courseid="{{courseid}}">
+<div class="local_bbzcal table"">
   {{#weekdays}}
     <div class="dayhead">{{.}}</div>
   {{/weekdays}}
@@ -7,11 +7,15 @@
       <div class="date">{{day}}</div>
       <div class="content">
         {{#events}}
-          <div class="event {{#external}}external{{/external}}">{{title}}</div>
+          <div class="event {{#external}}external{{/external}} {{#editable}}editable{{/editable}}"
+              data-id="{{id}}" data-timestamp="{{date}}" data-courseid="{{course_id}}"
+              data-title={{title}} data-description={{description}}>
+            {{title}}
+          </div>
         {{/events}}
       </div>
       {{#admin}}
-        <div class="add" data-timestamp="{{timestamp}}">&plus;</div>
+        <div class="add" data-id="0" data-timestamp="{{timestamp}}" data-courseid="{{courseid}}">&plus;</div>
       {{/admin}}
     </div>
   {{/dates}}
