@@ -7,10 +7,12 @@
       <div class="date">{{day}}</div>
       <div class="content">
         {{#events}}
-          <div class="event">{{title}}</div>
+          <div class="event {{#external}}external{{/external}}">{{title}}</div>
         {{/events}}
       </div>
-      <div class="add" data-timestamp="{{timestamp}}">&plus;</div>
+      {{#admin}}
+        <div class="add" data-timestamp="{{timestamp}}">&plus;</div>
+      {{/admin}}
     </div>
   {{/dates}}
 </div>

@@ -19,7 +19,7 @@ class renderer {
     echo $this->OUTPUT->header();
   }
 
-  public function calendar($events) {
+  public function calendar($events, $admin_course_ids) {
     $today = new \DateTime();
     $today->setTimezone(new \DateTimeZone('UTC'));
     $today->setTime(0, 0, 0);
@@ -58,6 +58,9 @@ class renderer {
         return $k->date == $date->getTimestamp();
       });
       foreach($matches as $match) {
+        if(intval($match->course_id) != intval($this->course_id)) {
+          $match->external = true;
+        }
         array_push($item->events, $match);
       }
 
@@ -68,6 +71,7 @@ class renderer {
     $data->weekdays = $weekdays;
     $data->dates = $dates;
     $data->courseid = $this->course_id;
+    $data->admin = in_array($this->course_id, $admin_course_ids);
     echo $this->OUTPUT->render_from_template('local_bbzcal/calendar', $data);
   }
 

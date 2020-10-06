@@ -23,4 +23,16 @@ class user {
     $config = get_config('local_bbzcal');
     return $config->propertyname;
   }
+
+  public function get_admin_course_ids($DB) {
+    $sql = "SELECT c.instanceid AS courseid
+            FROM {context} c
+            INNER JOIN {role_assignments} ra ON c.id = ra.contextid
+            INNER JOIN {role} r ON r.id = ra.roleid
+            WHERE r.shortname = 'editingteacher' AND ra.userid = :userid;";
+    $courses = $DB->get_records_sql($sql, array('userid' => $this->user_id));
+    return array_map(function ($c) {
+      return $c->courseid;
+    }, $courses);
+  }
 }
