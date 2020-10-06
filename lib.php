@@ -5,9 +5,9 @@ defined('MOODLE_INTERNAL') || die();
 function local_bbzcal_extend_navigation(global_navigation $navigation) {
   global $PAGE;
 
-  if ($calendar = $navigation->find('calendar', global_navigation::TYPE_CUSTOM)) {
+  /*if ($calendar = $navigation->find('calendar', global_navigation::TYPE_CUSTOM)) {
     $calendar->remove();
-  }
+  }*/
 
   $course_id = $PAGE->course->id;
 
