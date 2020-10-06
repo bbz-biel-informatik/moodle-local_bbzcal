@@ -31,7 +31,7 @@ function local_bbzcal_extend_navigation(global_navigation $navigation) {
     $course_calendar_item = navigation_node::create(
       get_string('course_nav_item', 'local_bbzcal'),
       new moodle_url('/local/bbzcal/calendar.php?courseid=' . $course_id),
-      navigation_node::NODETYPE_LEAF,
+      navigation_node::TYPE_SETTING,
       'bbzcoursecal',
       'bbzcoursecal',
       new pix_icon('i/calendar', 'bbzcoursecal')
