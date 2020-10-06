@@ -1,16 +1,18 @@
 <script>
   var table = document.querySelector('.local_bbzcal.table');
   var modal = document.querySelector('.local_bbzcal_modal');
+  document.body.appendChild(modal);
   var dateInput = modal.querySelector('.date');
   var tsInput = modal.querySelector('.timestamp');
   var cidInput = modal.querySelector('.course_id');
   var locInput = modal.querySelector('.location');
+  var close = modal.querySelector('.bbzcal_close');
   var buttons = document.querySelectorAll('.local_bbzcal .add');
 
-  function onAddButtonClick() {
+  function onAddButtonClick(e) {
     modal.style.display = 'block';
-    modal.style.top = this.offsetTop;
-    modal.style.left = this.offsetLeft;
+    modal.style.top = (e.clientY + window.scrollY) + 'px';
+    modal.style.left = (e.clientX + window.scrollX) + 'px';
     const date = new Date(this.getAttribute('data-timestamp') * 1000);
     tsInput.value = this.getAttribute('data-timestamp');
     cidInput.value = table.getAttribute('data-courseid');
@@ -20,5 +22,9 @@
 
   buttons.forEach(button => {
     button.addEventListener('click', onAddButtonClick);
+  });
+
+  close.addEventListener('click', function () {
+    modal.style.display = 'none';
   });
 </script>
