@@ -32,7 +32,7 @@ if($course_id != null) {
 }
 
 $usr = new local_bbzcal\user($USER->id);
-$admin_course_ids = $usr->get_admin_course_ids($DB);
+$admin_course_ids = $usr->get_teacher_course_ids($DB);
 
 $PAGE->set_heading($title);
 $PAGE->set_title($title);

@@ -15,7 +15,7 @@ require_login($course);
 
 // get courses administrated by user
 $usr = new local_bbzcal\user($USER->id);
-$admin_ids = $usr->get_admin_course_ids($DB);
+$admin_ids = $usr->get_teacher_course_ids($DB);
 
 // can only add to course where user is admin
 if(!in_array($course_id, $admin_ids)) {
