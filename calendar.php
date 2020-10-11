@@ -13,6 +13,7 @@ $renderer = new local_bbzcal\renderer($OUTPUT, 'global', null);
 $title = get_string('global_nav_item', 'local_bbzcal');
 
 if($course_id != null) {
+  // course context
   $title = get_string('course_nav_item', 'local_bbzcal');
   $course = $DB->get_record('course', array('id' => $course_id));
   require_login($course);
@@ -23,6 +24,7 @@ if($course_id != null) {
   // $events = local_bbzcal\event::get_course_events($DB, $course_id);
   $events = local_bbzcal\event::get_user_events($DB, $USER->id);
 } else {
+  // global context
   require_login();
   $PAGE->set_context(\context_system::instance());
   $PAGE->set_pagelayout('admin');
