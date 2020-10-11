@@ -11,8 +11,15 @@ class event {
    * Get all events for a specific course ID
    */
   public static function get_course_events($DB, $user_id, $course_id) {
-    echo "Displaying for course " . $course_id;
     return $DB->get_records('local_bbzcal', ['course_id' => $course_id]);
+  }
+
+  public static function get_courses_events($DB, $course_ids) {
+    $events_sql = "SELECT *
+                     FROM {local_bbzcal}
+                    WHERE course_id ";
+    list($in_sql, $params) = $DB->get_in_or_equal($course_ids, SQL_PARAMS_NAMED);
+    return $DB->get_records_sql($events_sql . $in_sql, $params);
   }
 
   /**
