@@ -2,6 +2,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2020100506;
+$plugin->version = 2020100507;
 $plugin->requires = 2020061502;
 $plugin->component = 'local_bbzcal';
