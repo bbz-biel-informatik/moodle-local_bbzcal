@@ -10,7 +10,7 @@ class event {
   /**
    * Get all events for a specific course ID
    */
-  public static function get_course_events($DB, $course_id) {
+  public static function get_course_events($DB, $user_id, $course_id) {
     echo "Displaying for course " . $course_id;
     return $DB->get_records('local_bbzcal', ['course_id' => $course_id]);
   }
@@ -18,14 +18,14 @@ class event {
   /**
    * Get all events for the courses of a specific user
    */
-  public static function get_user_events($DB, $user_id) {
+  public static function get_global_events($DB, $user_id) {
     $user = new user($user_id);
-    $admin_course_ids = $user->get_teacher_course_ids($DB);
-    $student_course_ids = $user->get_student_course_ids($DB);
-    if(count($admin_course_ids) > 0) {
-      // this is a teacher
-      $course_ids = $admin_course_ids;
+    $teacher_course_ids = $user->get_teacher_course_ids($DB);
+    if(count($teacher_course_ids) > 0) {
+      $course_ids = $teacher_course_ids;
     } else {
+      $prop_value = $user->get_property_value();
+      $student_course_ids = $user->get_student_course_ids($DB);
       $course_ids = $student_course_ids;
     }
 

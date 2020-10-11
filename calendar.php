@@ -22,13 +22,13 @@ if($course_id != null) {
   $PAGE->set_course($course);
   $renderer = new local_bbzcal\renderer($OUTPUT, 'course', $course_id);
   // $events = local_bbzcal\event::get_course_events($DB, $course_id);
-  $events = local_bbzcal\event::get_user_events($DB, $USER->id);
+  $events = local_bbzcal\event::get_course_events($DB, $USER->id, $course_id);
 } else {
   // global context
   require_login();
   $PAGE->set_context(\context_system::instance());
   $PAGE->set_pagelayout('admin');
-  $events = local_bbzcal\event::get_user_events($DB, $USER->id);
+  $events = local_bbzcal\event::get_global_events($DB, $USER->id);
 }
 
 $usr = new local_bbzcal\user($USER->id);
