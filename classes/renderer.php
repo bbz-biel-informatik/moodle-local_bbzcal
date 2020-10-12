@@ -10,11 +10,12 @@ class renderer {
   private $course_id;
   private $date;
 
-  public function __construct($OUTPUT, $type, $course_id, $date) {
+  public function __construct($OUTPUT, $type, $course_id, $date, $klasslist) {
     $this->OUTPUT = $OUTPUT;
     $this->type = $type;
     $this->course_id = $course_id;
     $this->date = $date;
+    $this->klasslist = $klasslist;
   }
 
   public function header() {
@@ -50,6 +51,7 @@ class renderer {
       $item = new \stdClass();
       $item->day = $date->format('j');
       $item->timestamp = $date->getTimestamp();
+      $item->klasslist = $this->klasslist;
       $item->events = array();
 
       $month = $date->format('n');

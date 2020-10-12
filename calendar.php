@@ -16,7 +16,8 @@ if(!$date) {
   $date = $today->format('Y-m-d');
 }
 
-$renderer = new local_bbzcal\renderer($OUTPUT, 'global', null, $date);
+$labels = '-';
+$renderer = new local_bbzcal\renderer($OUTPUT, 'global', null, $date, implode(', ', $labels));
 $title = get_string('global_nav_item', 'local_bbzcal');
 
 if($course_id != null) {
@@ -27,7 +28,6 @@ if($course_id != null) {
   $PAGE->set_context(\context_course::instance($course_id));
   $PAGE->set_pagelayout('incourse');
   $PAGE->set_course($course);
-  $renderer = new local_bbzcal\renderer($OUTPUT, 'course', $course_id, $date);
 
   $u = new local_bbzcal\user($USER->id);
   $c = new local_bbzcal\course($course_id);
@@ -45,6 +45,9 @@ if($course_id != null) {
     $courses = $c->ids_from_labels($DB, $labels);
     $events = local_bbzcal\event::get_courses_events($DB, $courses);
   }
+
+  $renderer = new local_bbzcal\renderer($OUTPUT, 'course', $course_id, $date, implode(', ', $labels));
+
 } else {
   // global context
   require_login();
