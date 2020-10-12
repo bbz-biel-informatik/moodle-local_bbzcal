@@ -8,11 +8,13 @@ class renderer {
   private $OUTPUT;
   private $type;
   private $course_id;
+  private $date;
 
-  public function __construct($OUTPUT, $type, $course_id) {
+  public function __construct($OUTPUT, $type, $course_id, $date) {
     $this->OUTPUT = $OUTPUT;
     $this->type = $type;
     $this->course_id = $course_id;
+    $this->date = $date;
   }
 
   public function header() {
@@ -23,14 +25,18 @@ class renderer {
     $today = new \DateTime();
     $today->setTimezone(new \DateTimeZone('UTC'));
     $today->setTime(0, 0, 0);
-    $currentMonth = $today->format('n');
+    $calendarDate = \DateTime::createFromFormat('Y-m-d', $this->date);
+    $calendarDate->setTimezone(new \DateTimeZone('UTC'));
+    $calendarDate->setTime(0, 0, 0);
 
-    $startDate = (clone $today)->modify('first day of this month');
+    $currentMonth = $calendarDate->format('n');
+
+    $startDate = (clone $calendarDate)->modify('first day of this month');
     if ($startDate->format('w') != 1) {
       $startDate->modify('previous monday');
     }
 
-    $endDate = (clone $today)->modify('last day of this month');
+    $endDate = (clone $calendarDate)->modify('last day of this month');
     if($endDate->format('w') != 0) {
       $endDate->modify('next sunday');
     }
@@ -75,6 +81,11 @@ class renderer {
     $data->dates = $dates;
     $data->courseid = $this->course_id;
     $data->admin = in_array($this->course_id, $admin_course_ids);
+    $data->current_month = $calendarDate->format('F Y');
+    $data->previous_month = (clone $calendarDate)->modify('first day of last month')->format('Y-m-d');
+    $data->next_month = (clone $calendarDate)->modify('first day of next month')->format('Y-m-d');
+    $data->today = $today->format('Y-m-d');
+    $data->course_id = $this->course_id;
     echo $this->OUTPUT->render_from_template('local_bbzcal/calendar', $data);
   }
 

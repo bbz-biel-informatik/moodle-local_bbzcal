@@ -1,3 +1,9 @@
+<div class="local_bbzcal dateswitcher">
+  <div class="previous"><a href="calendar.php?courseid={{course_id}}&date={{previous_month}}">&larr;</a></div>
+  <div class="current"><p>{{current_month}}</p><p class="smol"><a href="calendar.php?courseid={{course_id}}&date={{today}}">Heute</a></p></div>
+  <div class="next"><a href="calendar.php?courseid={{course_id}}&date={{next_month}}">&rarr;</a></div>
+</div>
+
 <div class="local_bbzcal table"">
   {{#weekdays}}
     <div class="dayhead">{{.}}</div>

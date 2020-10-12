@@ -8,8 +8,15 @@ date_default_timezone_set("UTC");
 
 $events = [];
 $course_id = optional_param('courseid', null, PARAM_INT);
+$date = optional_param('date', null, PARAM_TEXT);
+if(!$date) {
+  $today = new \DateTime();
+  $today->setTimezone(new \DateTimeZone('UTC'));
+  $today->setTime(0, 0, 0);
+  $date = $today->format('Y-m-d');
+}
 
-$renderer = new local_bbzcal\renderer($OUTPUT, 'global', null);
+$renderer = new local_bbzcal\renderer($OUTPUT, 'global', null, $date);
 $title = get_string('global_nav_item', 'local_bbzcal');
 
 if($course_id != null) {
@@ -20,7 +27,7 @@ if($course_id != null) {
   $PAGE->set_context(\context_course::instance($course_id));
   $PAGE->set_pagelayout('incourse');
   $PAGE->set_course($course);
-  $renderer = new local_bbzcal\renderer($OUTPUT, 'course', $course_id);
+  $renderer = new local_bbzcal\renderer($OUTPUT, 'course', $course_id, $date);
 
   $u = new local_bbzcal\user($USER->id);
   $c = new local_bbzcal\course($course_id);
