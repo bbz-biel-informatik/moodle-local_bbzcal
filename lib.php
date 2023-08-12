@@ -32,7 +32,7 @@ function local_bbzcal_extend_navigation(global_navigation $navigation) {
       'bbzglobalcal',
       new pix_icon('i/calendar', 'bbzglobalcal')
     );
-    $global_calendar_item->showinflatnavigation = true;
+    //$global_calendar_item->showinflatnavigation = true;
     $navigation->add_node($global_calendar_item, 'currentcourse');
   }
 }
