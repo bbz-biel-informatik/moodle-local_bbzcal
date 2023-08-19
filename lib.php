@@ -15,5 +15,5 @@ function local_bbzcal_extend_navigation_course(navigation_node $navigation) {
     null,
     new pix_icon('i/calendar', '')
   );
-  $navigation->add_node($course_calendar_item);
+  $navigation->add_node($course_calendar_item, 'coursereports');
 }
