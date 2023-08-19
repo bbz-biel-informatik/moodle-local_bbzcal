@@ -10,10 +10,11 @@ function local_bbzcal_extend_navigation_course(navigation_node $navigation) {
   $course_calendar_item = navigation_node::create(
     get_string('course_nav_item', 'local_bbzcal'),
     new moodle_url('/local/bbzcal/calendar.php?courseid=' . $course_id),
-    navigation_node::TYPE_SETTING,
     null,
-    null,
+    'bbzcal',
+    'bbzcal',
     new pix_icon('i/calendar', '')
   );
-  $navigation->add_node($course_calendar_item, 'coursereports');
+  // https://moodle.org/mod/forum/discuss.php?d=445503
+  $navigation->add_node($course_calendar_item, 'grades');
 }
