@@ -20,7 +20,7 @@
     modal.style.display = 'block';
     modal.style.top = (e.clientY + window.scrollY) + 'px';
     modal.style.left = (e.clientX + window.scrollX) + 'px';
-    klassList.textContent = this.getAttribute('data-klasslist');
+    klassList.textContent = this.getAttribute('data-createklasses');
     const date = new Date(this.getAttribute('data-timestamp') * 1000);
     idInput.value = this.getAttribute('data-id');
     tsInput.value = this.getAttribute('data-timestamp');
