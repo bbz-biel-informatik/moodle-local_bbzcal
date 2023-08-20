@@ -59,7 +59,7 @@ function get_classes_courses($DB, array $classes): array {
    */
   $conditions = [];
   foreach ($classes as &$klass) {
-    $conditions[] = "FIND_IN_SET('$klass', value) > 0";
+    $conditions[] = "value LIKE '%$klass%'";
   }
   $where = implode(" OR ", $conditions);
 
@@ -67,7 +67,7 @@ function get_classes_courses($DB, array $classes): array {
           FROM mdl_course course
           INNER JOIN mdl_customfield_data customdata ON customdata.instanceid = course.id
           INNER JOIN mdl_customfield_field customfield ON customfield.id = customdata.fieldid
-          WHERE customfield.name = 'canonicalclassnames' AND $where";
+          WHERE customfield.name = 'canonicalclassnames' AND ($where)";
   $courses = $DB->get_records_sql($sql);
   $ids = [];
   foreach($courses as &$course) {
@@ -106,7 +106,7 @@ if($u->is_teacher($DB)) {
 } else {
   // get users classes, then courses, and show their events
   $klasslist = [];
-  $classes = get_student_classes([$u->id]);
+  $classes = get_student_classes([$USER->id]);
   $courses = get_classes_courses($DB, $classes);
   $events = get_courses_events($DB, $courses);
 }
