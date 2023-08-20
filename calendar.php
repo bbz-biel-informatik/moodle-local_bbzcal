@@ -1,6 +1,7 @@
 <?php
 
 require(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot.'/user/profile/lib.php');
 
 global $PAGE, $DB, $CFG;
 
@@ -26,6 +27,67 @@ $PAGE->set_course($course);
 
 $u = new local_bbzcal\user($USER->id);
 $c = new local_bbzcal\course($course_id);
+
+function get_course_students(int $course_id): array {
+  $context = context_course::instance($course_id);
+  $user_list = get_enrolled_users($context, null, null, 'u.id');
+  $ids = [];
+  foreach($user_list as &$user) {
+    array_push($ids, $user->id);
+  }
+  return $ids;
+}
+
+function get_student_classes(array $user_ids): array {
+  $klasses = [];
+  foreach($user_ids as &$user_id) {
+    $profile = profile_user_record($user_id);
+    $profile_klasses = $profile->canonicalclassnames;
+    $klasses = array_merge($klasses, explode(", ", $profile_klasses));
+  }
+  $klasses = array_unique(array_filter($klasses));
+  asort($klasses);
+  return $klasses;
+}
+
+function get_classes_courses($DB, array $classes): array {
+  /* Schema:
+   * Course    Customdata      Customfield
+   *           id
+   *           fieldid ------- id
+   * id ------ instanceid      name
+   *           value
+   */
+  $conditions = [];
+  foreach ($classes as &$klass) {
+    $conditions[] = "FIND_IN_SET('$klass', value) > 0";
+  }
+  $where = implode(" OR ", $conditions);
+
+  $sql = "SELECT course.id, customdata.value
+          FROM mdl_course course
+          INNER JOIN mdl_customfield_data customdata ON customdata.instanceid = course.id
+          INNER JOIN mdl_customfield_field customfield ON customfield.id = customdata.fieldid
+          WHERE customfield.name = 'canonicalclassnames' AND $where";
+  $courses = $DB->get_records_sql($sql);
+  $ids = [];
+  foreach($courses as &$course) {
+    array_push($ids, $course->id);
+  }
+  return $ids;
+}
+
+function get_courses_events($DB, array $course_ids): array {
+  $course_id_list = implode(", ", $course_ids);
+  $sql = "SELECT * FROM mdl_local_bbzcal WHERE course_id IN ($course_id_list)";
+  $events = $DB->get_records_sql($sql);
+  return $events;
+}
+
+$studentsTEMP = get_course_students($course_id);
+$classesTEMP = get_student_classes($studentsTEMP);
+$coursesTEMP = get_classes_courses($DB, $classesTEMP);
+$eventsTEMP = get_courses_events($DB, $coursesTEMP);
 
 if($u->is_teacher($DB)) {
   // get the course labels (i.e. classes of all participants)
