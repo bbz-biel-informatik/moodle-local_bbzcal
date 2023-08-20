@@ -4,8 +4,6 @@
   <div class="next"><a href="calendar.php?courseid={{course_id}}&date={{next_month}}">&rarr;</a></div>
 </div>
 
-Termine für Klassen: {{displayklasses}}
-
 <div class="local_bbzcal table"">
   {{#weekdays}}
     <div class="dayhead">{{.}}</div>
@@ -23,7 +21,7 @@ Termine für Klassen: {{displayklasses}}
         {{/events}}
       </div>
       {{#admin}}
-        <div class="add" data-id="0" data-timestamp="{{timestamp}}" data-courseid="{{courseid}}" data-createklasses="{{createklasses}}">&plus;</div>
+        <div class="add" data-id="0" data-timestamp="{{timestamp}}" data-courseid="{{courseid}}" data-klasslist="{{klasslist}}">&plus;</div>
       {{/admin}}
     </div>
   {{/dates}}

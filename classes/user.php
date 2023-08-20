@@ -13,22 +13,6 @@ class user {
     $this->user_id = $user_id;
   }
 
-  public function get_labels() {
-    $val = $this->get_property_value();
-    return explode(', ', $val);
-  }
-
-  public function get_property_value() {
-    $user = profile_user_record($this->user_id, false);
-    $propname = $this->get_property_name();
-    return $user->$propname;
-  }
-
-  private function get_property_name() {
-    $config = get_config('local_bbzcal');
-    return $config->propertyname;
-  }
-
   public function is_teacher($DB) {
     return count($this->get_teacher_course_ids($DB)) > 0;
   }

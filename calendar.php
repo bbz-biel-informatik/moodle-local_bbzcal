@@ -26,7 +26,6 @@ $PAGE->set_pagelayout('incourse');
 $PAGE->set_course($course);
 
 $u = new local_bbzcal\user($USER->id);
-$c = new local_bbzcal\course($course_id);
 
 function get_course_students(int $course_id): array {
   $context = context_course::instance($course_id);
@@ -87,18 +86,26 @@ function get_courses_events($DB, array $course_ids): array {
   return $events;
 }
 
+function get_course_classes($DB, int $course_id): array {
+  $sql = "SELECT course.id, customdata.value
+          FROM mdl_course course
+          INNER JOIN mdl_customfield_data customdata ON customdata.instanceid = course.id
+          INNER JOIN mdl_customfield_field customfield ON customfield.id = customdata.fieldid
+          WHERE customfield.name = 'canonicalclassnames' AND course.id = $course_id";
+  $courses = $DB->get_record_sql($sql);
+  return explode(", ", $courses->value);
+}
+
 if($u->is_teacher($DB)) {
   // get course, all student's classes, then courses, and show their events
-  $create_labels = $c->get_labels($DB);
-  $display_labels = $c->get_student_classes($DB);
+  $klasslist = get_course_classes($DB, $course_id);
   $students = get_course_students($course_id);
   $classes = get_student_classes($students);
   $courses = get_classes_courses($DB, $classes);
   $events = get_courses_events($DB, $courses);
 } else {
   // get users classes, then courses, and show their events
-  $create_labels = [];
-  $display_labels = $u->get_labels();
+  $klasslist = [];
   $classes = get_student_classes([$u->id]);
   $courses = get_classes_courses($DB, $classes);
   $events = get_courses_events($DB, $courses);
@@ -108,7 +115,7 @@ foreach($events as &$event) {
   $event->shortname = explode(' - ', $event->shortname)[1];
 }
 
-$renderer = new local_bbzcal\renderer($OUTPUT, 'course', $course_id, $date, $display_labels, $create_labels);
+$renderer = new local_bbzcal\renderer($OUTPUT, 'course', $course_id, $date, $klasslist);
 
 $usr = new local_bbzcal\user($USER->id);
 $admin_course_ids = $usr->get_teacher_course_ids($DB);

@@ -10,13 +10,12 @@ class renderer {
   private $course_id;
   private $date;
 
-  public function __construct($OUTPUT, $type, $course_id, $date, $displayklasses, $createklasses) {
+  public function __construct($OUTPUT, $type, $course_id, $date, $klasslist) {
     $this->OUTPUT = $OUTPUT;
     $this->type = $type;
     $this->course_id = $course_id;
     $this->date = $date;
-    $this->displayklasses = $displayklasses;
-    $this->createklasses = $createklasses;
+    $this->klasslist = $klasslist;
   }
 
   public function header() {
@@ -52,8 +51,6 @@ class renderer {
       $item = new \stdClass();
       $item->day = $date->format('j');
       $item->timestamp = $date->getTimestamp();
-      //$item->displayklasses = implode(', ', $this->displayklasses);
-      //$item->createklasses = implode(', ', $this->createklasses);
       $item->events = array();
 
       $month = $date->format('n');
@@ -90,8 +87,7 @@ class renderer {
     $data->next_month = (clone $calendarDate)->modify('first day of next month')->format('Y-m-d');
     $data->today = $today->format('Y-m-d');
     $data->course_id = $this->course_id;
-    $data->displayklasses = implode(', ', $this->displayklasses);
-    $data->createklasses = implode(', ', $this->createklasses);
+    $data->klasslist = implode(', ', $this->klasslist);
     echo $this->OUTPUT->render_from_template('local_bbzcal/calendar', $data);
   }
 
