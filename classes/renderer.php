@@ -52,8 +52,8 @@ class renderer {
       $item = new \stdClass();
       $item->day = $date->format('j');
       $item->timestamp = $date->getTimestamp();
-      $item->displayklasses = implode(', ', $this->displayklasses);
-      $item->createklasses = implode(', ', $this->createklasses);
+      //$item->displayklasses = implode(', ', $this->displayklasses);
+      //$item->createklasses = implode(', ', $this->createklasses);
       $item->events = array();
 
       $month = $date->format('n');
@@ -91,7 +91,7 @@ class renderer {
     $data->today = $today->format('Y-m-d');
     $data->course_id = $this->course_id;
     $data->displayklasses = implode(', ', $this->displayklasses);
-    $data->createklasses = $this->createklasses;
+    $data->createklasses = implode(', ', $this->createklasses);
     echo $this->OUTPUT->render_from_template('local_bbzcal/calendar', $data);
   }
 

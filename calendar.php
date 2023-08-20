@@ -1,7 +1,5 @@
 <?php
 
-echo "skldhkjhskdf";
-
 require(__DIR__ . '/../../config.php');
 
 global $PAGE, $DB, $CFG;
@@ -43,6 +41,10 @@ if($u->is_teacher($DB)) {
   $display_labels = $u->get_labels();
   $courses = $c->ids_from_labels($DB, $labels);
   $events = local_bbzcal\event::get_courses_events($DB, $courses);
+}
+
+foreach($events as &$event) {
+  $event->shortname = explode(' - ', $event->shortname)[1];
 }
 
 $renderer = new local_bbzcal\renderer($OUTPUT, 'course', $course_id, $date, $display_labels, $create_labels);

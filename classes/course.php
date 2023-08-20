@@ -42,7 +42,6 @@ class course {
       $klasses = array_merge($klasses, explode(", ", $student->data));
     }
     $klasses = array_unique($klasses);
-    print_r($klasses);
     return $klasses;
   }
 

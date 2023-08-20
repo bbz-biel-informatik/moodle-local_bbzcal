@@ -15,8 +15,10 @@ class event {
   }
 
   public static function get_courses_events($DB, $course_ids) {
-    $events_sql = "SELECT *
-                     FROM {local_bbzcal}
+    $events_sql = "SELECT cal.*, c.shortname
+                     FROM {local_bbzcal} cal
+                     INNER JOIN {course} c
+                     ON cal.course_id = c.id
                     WHERE course_id ";
     list($in_sql, $params) = $DB->get_in_or_equal($course_ids, SQL_PARAMS_NAMED);
     return $DB->get_records_sql($events_sql . $in_sql, $params);
