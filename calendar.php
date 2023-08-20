@@ -79,30 +79,29 @@ function get_classes_courses($DB, array $classes): array {
 
 function get_courses_events($DB, array $course_ids): array {
   $course_id_list = implode(", ", $course_ids);
-  $sql = "SELECT * FROM mdl_local_bbzcal WHERE course_id IN ($course_id_list)";
+  $sql = "SELECT cal.*, course.shortname
+          FROM mdl_local_bbzcal cal
+          INNER JOIN mdl_course course ON cal.course_id = course.id
+          WHERE course_id IN ($course_id_list)";
   $events = $DB->get_records_sql($sql);
   return $events;
 }
 
-$studentsTEMP = get_course_students($course_id);
-$classesTEMP = get_student_classes($studentsTEMP);
-$coursesTEMP = get_classes_courses($DB, $classesTEMP);
-$eventsTEMP = get_courses_events($DB, $coursesTEMP);
-
 if($u->is_teacher($DB)) {
-  // get the course labels (i.e. classes of all participants)
-  // get all events of courses with this label (i.e. all events of all participants)
+  // get course, all student's classes, then courses, and show their events
   $create_labels = $c->get_labels($DB);
   $display_labels = $c->get_student_classes($DB);
-  $courses = $c->ids_from_labels($DB, $display_labels);
-  $events = local_bbzcal\event::get_courses_events($DB, $courses);
+  $students = get_course_students($course_id);
+  $classes = get_student_classes($students);
+  $courses = get_classes_courses($DB, $classes);
+  $events = get_courses_events($DB, $courses);
 } else {
-  // get the user labels (i.e. classes of this participant)
-  // get all events of courses with this label (i.e. all events of this user)
+  // get users classes, then courses, and show their events
   $create_labels = [];
   $display_labels = $u->get_labels();
-  $courses = $c->ids_from_labels($DB, $labels);
-  $events = local_bbzcal\event::get_courses_events($DB, $courses);
+  $classes = get_student_classes([$u->id]);
+  $courses = get_classes_courses($DB, $classes);
+  $events = get_courses_events($DB, $courses);
 }
 
 foreach($events as &$event) {
