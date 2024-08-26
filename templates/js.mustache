@@ -2,7 +2,6 @@
   var table = document.querySelector('.local_bbzcal.table');
   var modal = document.querySelector('.local_bbzcal_modal');
   document.body.appendChild(modal);
-  var klassList = modal.querySelector('.klasses');
   var dateInput = modal.querySelector('.date');
   var idInput = modal.querySelector('.id');
   var tsInput = modal.querySelector('.timestamp');
@@ -20,7 +19,6 @@
     modal.style.display = 'block';
     modal.style.top = (e.clientY + window.scrollY) + 'px';
     modal.style.left = (e.clientX + window.scrollX) + 'px';
-    klassList.textContent = this.getAttribute('data-klasslist');
     const date = new Date(this.getAttribute('data-timestamp') * 1000);
     idInput.value = this.getAttribute('data-id');
     tsInput.value = this.getAttribute('data-timestamp');

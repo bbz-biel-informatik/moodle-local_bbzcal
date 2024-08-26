@@ -2,6 +2,7 @@
 
 require(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot.'/user/profile/lib.php');
+require_once($CFG->libdir.'/enrollib.php');
 
 global $PAGE, $DB, $CFG;
 
@@ -27,56 +28,59 @@ $PAGE->set_course($course);
 
 $u = new local_bbzcal\user($USER->id);
 
+// Get the semester identifer (e.g. 24H) of the given course
+function get_course_semester(int $course_id): string {
+  global $DB;
+
+  $course = get_course($course_id);
+  $shortname = $course->shortname;
+  $pos = strpos($shortname, ' - ');
+  return substr($shortname, 0, $pos);
+}
+
+// Get all students of the given course
 function get_course_students(int $course_id): array {
-  $context = context_course::instance($course_id);
-  $user_list = get_enrolled_users($context, null, null, 'u.id');
-  $ids = [];
+  global $DB;
+
+  $course_context = context_course::instance($course_id);
+  $user_list = get_enrolled_users($course_context, null, null, 'u.id');
+
+  $student_ids = [];
   foreach($user_list as &$user) {
-    array_push($ids, $user->id);
+    if (user_has_role_assignment($user->id, 5, $course_context->id)) {
+      $student_ids[] = $user->id;
+    }
   }
-  return $ids;
+  return $student_ids;
 }
 
-function get_student_classes(array $user_ids): array {
-  $klasses = [];
-  foreach($user_ids as &$user_id) {
-    $profile = profile_user_record($user_id);
-    $profile_klasses = $profile->canonicalclassnames;
-    $klasses = array_merge($klasses, explode(", ", $profile_klasses));
-  }
-  $klasses = array_unique(array_filter($klasses));
-  asort($klasses);
-  return $klasses;
+// Get all the courses the given students are enrolled
+function get_students_courses(array $student_ids, string $semester): array {
+  global $DB;
+
+  error_log('$get_students_courses: '. print_r(array_map('intval', $student_ids), true));
+  $student_ids_string = implode(',', array_map('intval', $student_ids));
+
+  $sql = "SELECT DISTINCT c.id
+          FROM {course} c
+          JOIN {enrol} e ON e.courseid = c.id
+          JOIN {user_enrolments} ue ON ue.enrolid = e.id
+          WHERE ue.userid IN ($student_ids_string)
+          AND c.shortname LIKE :prefix";
+
+  $params = array('prefix' => $semester . '%');
+
+  $course_records = $DB->get_records_sql($sql, $params);
+
+  $course_ids = array_keys($course_records);
+ 
+  return $course_ids;
 }
 
-function get_classes_courses($DB, array $classes): array {
-  /* Schema:
-   * Course    Customdata      Customfield
-   *           id
-   *           fieldid ------- id
-   * id ------ instanceid      name
-   *           value
-   */
-  $conditions = [];
-  foreach ($classes as &$klass) {
-    $conditions[] = "value LIKE '%$klass%'";
-  }
-  $where = implode(" OR ", $conditions);
+function get_courses_events(array $course_ids): array {
+  global $DB;
 
-  $sql = "SELECT course.id, customdata.value
-          FROM mdl_course course
-          INNER JOIN mdl_customfield_data customdata ON customdata.instanceid = course.id
-          INNER JOIN mdl_customfield_field customfield ON customfield.id = customdata.fieldid
-          WHERE customfield.name = 'canonicalclassnames' AND ($where)";
-  $courses = $DB->get_records_sql($sql);
-  $ids = [];
-  foreach($courses as &$course) {
-    array_push($ids, $course->id);
-  }
-  return $ids;
-}
-
-function get_courses_events($DB, array $course_ids): array {
+  error_log('$get_courses_events: '. print_r($course_ids, true));
   $course_id_list = implode(", ", $course_ids);
   $sql = "SELECT cal.*, course.shortname
           FROM mdl_local_bbzcal cal
@@ -86,36 +90,24 @@ function get_courses_events($DB, array $course_ids): array {
   return $events;
 }
 
-function get_course_classes($DB, int $course_id): array {
-  $sql = "SELECT course.id, customdata.value
-          FROM mdl_course course
-          INNER JOIN mdl_customfield_data customdata ON customdata.instanceid = course.id
-          INNER JOIN mdl_customfield_field customfield ON customfield.id = customdata.fieldid
-          WHERE customfield.name = 'canonicalclassnames' AND course.id = $course_id";
-  $courses = $DB->get_record_sql($sql);
-  return explode(", ", $courses->value);
-}
+$semester = get_course_semester($course_id);
 
 if($u->is_teacher($DB)) {
   // get course, all student's classes, then courses, and show their events
-  $klasslist = get_course_classes($DB, $course_id);
-  $students = get_course_students($course_id);
-  $classes = get_student_classes($students);
-  $courses = get_classes_courses($DB, $classes);
-  $events = get_courses_events($DB, $courses);
+  $student_ids = get_course_students($course_id);
+  $course_ids = get_students_courses($student_ids, $semester);
+  $events = get_courses_events($course_ids);
 } else {
-  // get users classes, then courses, and show their events
-  $klasslist = [];
-  $classes = get_student_classes([$USER->id]);
-  $courses = get_classes_courses($DB, $classes);
-  $events = get_courses_events($DB, $courses);
+  // get users courses, and show their events
+  $course_ids = get_students_courses([$USER->id], $semester);
+  $events = get_courses_events($course_ids);
 }
 
 foreach($events as &$event) {
   $event->shortname = explode(' - ', $event->shortname)[1];
 }
 
-$renderer = new local_bbzcal\renderer($OUTPUT, 'course', $course_id, $date, $klasslist);
+$renderer = new local_bbzcal\renderer($OUTPUT, 'course', $course_id, $date);
 
 $usr = new local_bbzcal\user($USER->id);
 $admin_course_ids = $usr->get_teacher_course_ids($DB);
