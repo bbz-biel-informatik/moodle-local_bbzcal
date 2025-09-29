@@ -28,7 +28,7 @@ jobs:
       - name: Create release zip
         run: |
           cd build
-          zip -r bbzcal-release.zip bbzcal/
+          zip -r local_bbzcal.zip bbzcal/
 
       - name: Get version from tag or generate timestamp
         id: version
@@ -63,7 +63,7 @@ jobs:
             - Templates
 
           files: |
-            build/bbzcal-release.zip
+            build/local_bbzcal.zip
           draft: false
           prerelease: false
         env:
