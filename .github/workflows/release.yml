@@ -36,7 +36,7 @@ jobs:
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
           else
-            VERSION=$(date +'%Y.%m.%d-%H%M%S')
+            VERSION=$(date +'%Y%m%d%H%M%S')
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
@@ -44,9 +44,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.version }}
-          name: BBZ Calendar Plugin ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
           body: |
-            ## BBZ Calendar Plugin Release ${{ steps.version.outputs.version }}
+            ## local_bbzcal ${{ steps.version.outputs.version }}
 
             ### Installation
             1. Download the `local_bbzcal.zip` file
