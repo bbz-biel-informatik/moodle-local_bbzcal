@@ -48,19 +48,10 @@ jobs:
           body: |
             ## BBZ Calendar Plugin Release ${{ steps.version.outputs.version }}
 
-            This release contains the complete BBZ Calendar Moodle plugin source code.
-
             ### Installation
-            1. Download the `bbzcal-release.zip` file
+            1. Download the `local_bbzcal.zip` file
             2. Extract it to your Moodle installation's `local/` directory
             3. Navigate to Site Administration > Notifications to complete the installation
-
-            ### What's included
-            - All PHP source files
-            - Compiled CSS styles
-            - Language files
-            - Database schema
-            - Templates
 
           files: |
             build/local_bbzcal.zip
